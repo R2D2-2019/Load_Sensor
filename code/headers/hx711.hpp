@@ -19,21 +19,25 @@ namespace r2d2::load_sensor {
         hwlib::pin_out &clock_pin;
         hwlib::pin_in &data_pin;
 
-        int tare_value = 0;
+        
 
     public:
         hx711(hwlib::pin_out &clock_pin, hwlib::pin_in &data_pin):
             clock_pin(clock_pin),
-            data_pin(data_pin)
+            data_pin(data_pin),
+            tare_value(0)
         {}
 
+    int tare_value;
+
     //protected:
-        int read();
+        int32_t read();
         void tare();
 
     private:
         void clock_pulse();
         void wake();
         void sleep();
+        bool is_ready();
     };
 }

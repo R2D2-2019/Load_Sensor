@@ -7,12 +7,16 @@ int main(void) {
     hwlib::wait_ms(1000);
 
     auto data = hwlib::target::pin_in(hwlib::target::pins::d2);
-    auto clk = hwlib::target::pin_out(hwlib::target::pins::d1);
+    auto clk = hwlib::target::pin_out(hwlib::target::pins::d3);
     
     r2d2::load_sensor::hx711 scale = r2d2::load_sensor::hx711(clk , data);
+    hwlib::wait_ms(500);
 
-    
+    hwlib::cout << scale.tare_value << "\n";
+    scale.tare();
+    hwlib::cout << scale.tare_value << "\n";
     for(;;){
+
       int a = scale.read();
       hwlib::cout << a << "\n";
       hwlib::wait_ms(1000);
