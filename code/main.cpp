@@ -16,9 +16,12 @@ int main(void) {
     scale.tare();
     hwlib::cout << scale.tare_value << "\n";
     for(;;){
-
-      int a = scale.read();
-      hwlib::cout << a << "\n";
+      int sum = 0;
+      for(int i = 0; i < 20; i++){
+          sum += scale.read();
+      }
+      
+      hwlib::cout << (int)((sum/20)/209.6) << "\n";
       hwlib::wait_ms(1000);
     }
 
