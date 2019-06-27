@@ -14,7 +14,7 @@
 #include <hwlib.hpp>
 
 namespace r2d2::load_sensor {
-    class hx711 {
+    class hx711_c {
     private:
         hwlib::pin_out &clock_pin;
         hwlib::pin_in &data_pin;
@@ -28,10 +28,11 @@ namespace r2d2::load_sensor {
             tare_value(0)
         {}
 
-    int tare_value;
-
+        void calibrate(int grams);
+        
     //protected:
         int32_t read();
+        int32_t read_average(int samples);
         void tare();
 
     private:
@@ -39,5 +40,8 @@ namespace r2d2::load_sensor {
         void wake();
         void sleep();
         bool is_ready();
+
+        int tare_value;
+        int calibration_factor = 1;
     };
 }

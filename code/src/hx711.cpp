@@ -1,71 +1,88 @@
 #include <hx711.hpp>
 
 namespace r2d2::load_sensor {
-        int32_t hx711::read() {
-              wake();
+        int32_t hx711_c::read() {
+            wake();
 
-             while(!is_ready()){}
+            while(!is_ready()){}
 
-        clock_pin.write(0);
+            clock_pin.write(0);
 
-        int32_t value = 0;
-        uint8_t data[3] = { 0 };   
-            for (int j = 3; j--;){
-                for (int i = 0; i < 8; ++i){
-                    clock_pin.write(1);
-                    hwlib::wait_us(1);
-                    data[j] |= data_pin.read() << (7 - i);
-                    clock_pin.write(0);
-                    hwlib::wait_us(1);
+            int32_t value = 0;
+            uint8_t data[3] = { 0 };   
+                for (int j = 3; j--;){
+                    for (int i = 0; i < 8; ++i){
+                        clock_pin.write(1);
+                        hwlib::wait_us(1);
+                        data[j] |= data_pin.read() << (7 - i);
+                        clock_pin.write(0);
+                        hwlib::wait_us(1);
+                    }
                 }
-            }
-        clock_pulse();
+            clock_pulse();
 
-    value = ((uint32_t) data[2] << 16) | ((uint32_t) data[1] << 8) | (uint32_t) data[0];
-    return (value - tare_value);
+            value = (data[2] << 16) | (data[1] << 8) | data[0];
+            return (value - tare_value)/calibration_factor;
         };
 
-        void hx711::clock_pulse() {
+        void hx711_c::clock_pulse() {
             clock_pin.write(1);
             hwlib::wait_us(1);
             clock_pin.write(0);
             hwlib::wait_us(1);
         };
 
-        void hx711::wake() {
+        void hx711_c::wake() {
             clock_pin.write(0);
         };
 
-        void hx711::sleep() {
+        void hx711_c::sleep() {
             clock_pin.write(0);
             clock_pin.write(1);
         };
 
-        void hx711::tare() {
-        wake();
+        void hx711_c::tare() {
+            wake();
 
-        while(!is_ready()){}
+            while(!is_ready()){}
 
-        clock_pin.write(0);
+            clock_pin.write(0);
 
-        int32_t value = 0;
-        uint8_t data[3] = { 0 };   
-            for (int j = 3; j--;){
-                for (int i = 0; i < 8; ++i){
-                    clock_pin.write(1);
-                    hwlib::wait_us(1);
-                    data[j] |= data_pin.read() << (7 - i);
-                    clock_pin.write(0);
-                    hwlib::wait_us(1);
+            int32_t value = 0;
+            uint8_t data[3] = { 0 };   
+                for (int j = 3; j--;){
+                    for (int i = 0; i < 8; ++i){
+                        clock_pin.write(1);
+                        hwlib::wait_us(1);
+                        data[j] |= data_pin.read() << (7 - i);
+                        clock_pin.write(0);
+                        hwlib::wait_us(1);
+                    }
                 }
-            }
-        clock_pulse();
+            clock_pulse();
 
-    value = ((uint32_t) data[2] << 16) | ((uint32_t) data[1] << 8) | (uint32_t) data[0];
-    tare_value = value;
+            value = (data[2] << 16) | (data[1] << 8) | data[0];
+            tare_value = value;
         };
 
-        bool hx711::is_ready() {
+        bool hx711_c::is_ready() {
 	        return data_pin.read() == 0;
         };
+
+        int32_t hx711_c::read_average(int samples){
+            int sum = 0;
+            for(int i = 0; i < samples; i++){
+                sum += read();
+            }
+            return sum / samples;
+        };
+
+        void hx711_c::calibrate(int grams){
+            tare();
+            hwlib::cout << "Put your weight on the scale \n";
+            hwlib::cout << "Wait 5 seconds \n";
+            hwlib::wait_ms(5000);
+
+            calibration_factor = read_average(20)/grams;
+        }
 }

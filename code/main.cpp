@@ -12,16 +12,19 @@ int main(void) {
     r2d2::load_sensor::hx711 scale = r2d2::load_sensor::hx711(clk , data);
     hwlib::wait_ms(500);
 
-    hwlib::cout << scale.tare_value << "\n";
-    scale.tare();
-    hwlib::cout << scale.tare_value << "\n";
+    //hwlib::cout << scale.tare_value << "\n";
+    //scale.tare();
+    //hwlib::cout << scale.tare_value << "\n";
+
+    scale.calibrate(55);
     for(;;){
-      int sum = 0;
-      for(int i = 0; i < 20; i++){
-          sum += scale.read();
-      }
+      // int sum = 0;
+      // for(int i = 0; i < 20; i++){
+      //     sum += scale.read();
+      // }
       
-      hwlib::cout << (int)((sum/20)/209.6) << "\n";
+      //hwlib::cout << (int)(scale.read_average(20)/209.6) << "\n";
+      hwlib::cout << (int)(scale.read_average(20)) << " grams" << "\n";
       hwlib::wait_ms(1000);
     }
 
