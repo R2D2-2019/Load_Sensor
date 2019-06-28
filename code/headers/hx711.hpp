@@ -22,7 +22,7 @@ namespace r2d2::load_sensor {
         
 
     public:
-        hx711(hwlib::pin_out &clock_pin, hwlib::pin_in &data_pin):
+        hx711_c(hwlib::pin_out &clock_pin, hwlib::pin_in &data_pin):
             clock_pin(clock_pin),
             data_pin(data_pin),
             tare_value(0)
