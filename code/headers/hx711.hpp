@@ -33,6 +33,7 @@ namespace r2d2::load_sensor {
         void wake();
         void sleep();
         bool is_ready() const;
+        int32_t read_raw();
 
         int tare_value;
         int calibration_factor = 1;

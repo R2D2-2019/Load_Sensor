@@ -16,7 +16,7 @@ int main(void) {
     //scale.tare();
     //hwlib::cout << scale.tare_value << "\n";
 
-    scale.calibrate(427);
+    scale.calibrate(204);
     for(;;){
       // int sum = 0;
       // for(int i = 0; i < 20; i++){
