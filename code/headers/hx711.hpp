@@ -23,8 +23,8 @@ namespace r2d2::load_sensor {
         hx711_c(hwlib::pin_out &clock_pin, hwlib::pin_in &data_pin)
             : clock_pin(clock_pin), data_pin(data_pin), tare_value(0) {}
 
-        int32_t read() const;
-        int32_t read_average(const int &samples) const;
+        int32_t read();
+        int32_t read_average(const int &samples);
         void tare();
         void calibrate(const int &grams);
 

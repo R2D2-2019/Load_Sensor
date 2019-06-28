@@ -67,11 +67,11 @@ namespace r2d2::load_sensor {
         tare_value = value;
     };
 
-    bool hx711_c::is_ready() {
+    bool hx711_c::is_ready() const {
         return data_pin.read() == 0;
     };
 
-    int32_t hx711_c::read_average(int samples) {
+    int32_t hx711_c::read_average(const int &samples) {
         int sum = 0;
         for (int i = 0; i < samples; i++) {
             sum += read();
@@ -79,12 +79,13 @@ namespace r2d2::load_sensor {
         return sum / samples;
     };
 
-    void hx711_c::calibrate(int grams) {
+    void hx711_c::calibrate(const int &grams) {
         tare();
         hwlib::cout << "Put your weight on the scale \n";
         hwlib::cout << "Wait 5 seconds \n";
         hwlib::wait_ms(5000);
 
         calibration_factor = read_average(20) / grams;
+        hwlib::cout << calibration_factor << "\n";
     }
 } // namespace r2d2::load_sensor
