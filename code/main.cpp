@@ -9,14 +9,14 @@ int main(void) {
     auto data = hwlib::target::pin_in(hwlib::target::pins::d2);
     auto clk = hwlib::target::pin_out(hwlib::target::pins::d3);
     
-    r2d2::load_sensor::hx711 scale = r2d2::load_sensor::hx711(clk , data);
+    r2d2::load_sensor::hx711_c scale = r2d2::load_sensor::hx711_c(clk , data);
     hwlib::wait_ms(500);
 
     //hwlib::cout << scale.tare_value << "\n";
     //scale.tare();
     //hwlib::cout << scale.tare_value << "\n";
 
-    scale.calibrate(55);
+    scale.calibrate(217);
     for(;;){
       // int sum = 0;
       // for(int i = 0; i < 20; i++){
