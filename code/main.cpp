@@ -5,27 +5,41 @@ int main(void) {
   // kill the watchdog
     WDT->WDT_MR = WDT_MR_WDDIS;
     hwlib::wait_ms(1000);
+    namespace target = hwlib::target;
 
     auto data = hwlib::target::pin_in(hwlib::target::pins::d2);
     auto clk = hwlib::target::pin_out(hwlib::target::pins::d3);
-    
+    auto scl = hwlib::target::pin_oc{ hwlib::target::pins::scl };
+    auto sda = hwlib::target::pin_oc{ hwlib::target::pins::sda };
+    auto i2c_bus = hwlib::i2c_bus_bit_banged_scl_sda( scl, sda );
+    auto oled_channel = i2c_bus.channel( 0x3c );
+    auto oled         = hwlib::glcd_oled_i2c_128x64_direct( oled_channel );  
+   
+    auto font = hwlib::font_default_8x8();
+    auto display = hwlib::terminal_from( oled, font );
+
     r2d2::load_sensor::hx711_c scale = r2d2::load_sensor::hx711_c(clk , data);
     hwlib::wait_ms(500);
 
-    //hwlib::cout << scale.tare_value << "\n";
-    //scale.tare();
-    //hwlib::cout << scale.tare_value << "\n";
+    scale.calibrate(217);
 
-    scale.calibrate(204);
+    char letter_array[5];
     for(;;){
-      // int sum = 0;
-      // for(int i = 0; i < 20; i++){
-      //     sum += scale.read();
-      // }
-      
-      //hwlib::cout << (int)(scale.read_average(20)/209.6) << "\n";
-      hwlib::cout << (int)(scale.read_average(20)) << " grams" << "\n";
+      int value = scale.read_average(20);
+      letter_array[4] = (value % 10) + '0'; value /= 10;
+      letter_array[3] = (value % 10) + '0'; value /= 10;
+      letter_array[2] = (value % 10) + '0'; value /= 10;
+      letter_array[1] = (value % 10) + '0'; value /= 10;
+      letter_array[0] = (value % 10) + '0'; value /= 10;
+
+      for(int i = 0; i < 5; i++){
+        display << letter_array[i];
+      }
+      display << " grams" <<'\n';
+      // << (int)(scale.read_average(20)) << " grams" << "\n";
+      //display << a << " grams" << "\n"; 
       hwlib::wait_ms(1000);
+      oled.clear();
     }
 
 }
