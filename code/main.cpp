@@ -32,14 +32,18 @@ int main(void) {
       letter_array[1] = (value % 10) + '0'; value /= 10;
       letter_array[0] = (value % 10) + '0'; value /= 10;
 
-      for(int i = 0; i < 5; i++){
-        display << letter_array[i];
-      }
+        //display << letter_array[i];
+      display << "\t0000" << letter_array[0];
+      display << "\t0100" << letter_array[1];
+      display << "\t0200" << letter_array[2];
+      display << "\t0300" << letter_array[3];
+      display << "\t0400" << letter_array[4];
       display << " grams" <<'\n';
       // << (int)(scale.read_average(20)) << " grams" << "\n";
       //display << a << " grams" << "\n"; 
       hwlib::wait_ms(1000);
       oled.clear();
+      display << hwlib::flush;
     }
 
 }
